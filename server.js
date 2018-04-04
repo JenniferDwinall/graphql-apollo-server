@@ -27,6 +27,8 @@ export const schema = makeExecutableSchema({ typeDefs, resolvers })
 graphQLServer.use('/static', express.static('static'))
 graphQLServer.use('/graphql', bodyParser.json(), graphqlExpress({ schema }))
 graphQLServer.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
+
+// REST Endpoints
 graphQLServer.use('/nba', nbaRouter)
 
 graphQLServer.listen(GRAPHQL_PORT, () =>
