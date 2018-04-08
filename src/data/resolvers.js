@@ -10,6 +10,11 @@ import {
   getGameById
 } from './connectors'
 
+import {
+  dateValidator,
+  idValidator
+} from '../utils/validator'
+
 // At the minimum, we need to define a resolver function for each field that
 // either returns a non-scalar type or takes any arguments.
 const resolvers = {
@@ -19,7 +24,8 @@ const resolvers = {
     },
 
     team: (obj, { id }, context, info) => {
-      return getTeam(id)
+      const validId = idValidator(id)
+      return (validId) ? getTeam(id) : {}
     },
 
     all_players: () => {
@@ -27,15 +33,18 @@ const resolvers = {
     },
 
     players: (obj, { date }, context, info) => {
-      return getPlayersByDate(date)
+      const validDate = dateValidator(date)
+      return (validDate) ? getPlayersByDate(validDate) : []
     },
 
     player: (obj, { id }, context, info) => {
-      return getPlayerById(id)
+      const validId = idValidator(id)
+      return (validId) ? getPlayerById(id) : {}
     },
 
     player_stats: (obj, { id }, context, info) => {
-      return getPlayerStats(id)
+      const validId = idValidator(id)
+      return (validId) ? getPlayerStats(id) : {}
     },
 
     all_games: () => {
@@ -43,11 +52,13 @@ const resolvers = {
     },
 
     games: (obj, { date }, context, info) => {
-      return getGamesByDate(date)
+      const validDate = dateValidator(date)
+      return (validDate) ? getGamesByDate(validDate) : []
     },
 
     game: (obj, { id }, context, info) => {
-      return getGameById(id)
+      const validId = idValidator(id)
+      return (validId) ? getGameById(id) : {}
     }
   }
 }
