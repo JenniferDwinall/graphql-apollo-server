@@ -5,7 +5,7 @@ import {
   getPlayersByDate,
   getPlayerById,
   getPlayerStats,
-  getAllGames,
+  getAllGamesWithScores,
   getGamesByDate,
   getGameById
 } from './connectors'
@@ -48,7 +48,7 @@ const resolvers = {
     },
 
     all_games: () => {
-      return getAllGames()
+      return getAllGamesWithScores()
     },
 
     games: (obj, { date }, context, info) => {

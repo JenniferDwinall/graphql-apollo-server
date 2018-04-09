@@ -190,8 +190,26 @@ curl \
 ```
 
 ### Games
+
 #### Returns all games (with scores)
 GET /sport/games
+```
+query {
+  all_games {id,home_team_id,away_team_id,date}
+}
+```
+
+[GraphIQL Link](http://localhost:3000/graphiql?query=query%20%7B%0A%20%20all_games%20%7Bid%2Chome_team_id%2Caway_team_id%2Cdate%7D%0A%7D%0A)
+
+```
+curl \
+  -X GET \
+  -H "Content-Type: application/json" \
+  http://localhost:3000/nba/games
+```
+
+#### Returns all games for a given date (date format: MMDDYYYY)
+GET /sport/games?date=:date
 ```
 query($date: Date) {
   games(date: $date) {id,home_team_id,away_team_id,date}
@@ -208,7 +226,7 @@ query($date: Date) {
 curl \
   -X GET \
   -H "Content-Type: application/json" \
-  http://localhost:3000/nba/games
+  http://localhost:3000/nba/games?date=01012016
 ```
 
 #### Returns the game objects of the id specified

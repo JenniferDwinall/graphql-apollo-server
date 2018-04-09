@@ -2,7 +2,7 @@ import express from 'express'
 import { graphql } from 'graphql'
 
 import {
-  gqlBasketballAllGames,
+  gqlBasketballAllGamesWithScores,
   gqlBasketballAllPlayers,
   gqlBasketballAllTeams,
   gqlBasketballGamesByDate,
@@ -48,7 +48,8 @@ const gqlQuery = (source) => {
   return graphql(schema, source, null, null, null, null)
 }
 
-var router = express.Router()
+const router = express.Router()
+const ERROR_MESSAGE = 'There was an error retrieving data.'
 
 /*
  * Returns all teams.
@@ -64,8 +65,8 @@ router.get('/teams', (req, res) => {
       res.send({ 'data': result.data })
     })
     .catch(err => {
-      res.sendStatus(500)
-      res.send({ 'error': err })
+      res.status(500)
+        .send(ERROR_MESSAGE)
     })
 })
 
@@ -89,8 +90,8 @@ router.get('/teams/:id', (req, res) => {
         res.send({ 'data': result.data })
       })
       .catch(err => {
-        console.log(err)
-        res.send({ 'error': err })
+        res.status(500)
+          .send(ERROR_MESSAGE)
       })
   } else {
     res.sendStatus(422)
@@ -124,8 +125,7 @@ router.get('/players', (req, res) => {
           res.send({ 'data': result.data })
         })
         .catch(err => {
-          res.sendStatus(500)
-          res.send({ 'error': err })
+          res.send(ERROR_MESSAGE)
         })
     }
   } else {
@@ -138,8 +138,7 @@ router.get('/players', (req, res) => {
         res.send({ 'data': result.data })
       })
       .catch(err => {
-        res.sendStatus(500)
-        res.send({ 'error': err })
+        res.send(ERROR_MESSAGE)
       })
   }
 })
@@ -164,8 +163,7 @@ router.get('/player/:id', (req, res) => {
         res.send({ 'data': result.data })
       })
       .catch(err => {
-        res.sendStatus(500)
-        res.send({ 'error': err })
+        res.send(ERROR_MESSAGE)
       })
   } else {
     res.sendStatus(422)
@@ -192,8 +190,7 @@ router.get('/player/:id/stats', (req, res) => {
         res.send({ 'data': result.data })
       })
       .catch(err => {
-        res.sendStatus(500)
-        res.send({ 'error': err })
+        res.send(ERROR_MESSAGE)
       })
   } else {
     res.sendStatus(422)
@@ -226,12 +223,11 @@ router.get('/games', (req, res) => {
           res.send({ 'data': result.data })
         })
         .catch(err => {
-          res.sendStatus(500)
-          res.send({ 'error': err })
+          res.send(ERROR_MESSAGE)
         })
     }
   } else {
-    const query = gqlBasketballAllGames()
+    const query = gqlBasketballAllGamesWithScores()
     gqlQuery(query)
       .then(result => {
         if (result.errors) {
@@ -240,8 +236,7 @@ router.get('/games', (req, res) => {
         res.send({ 'data': result.data })
       })
       .catch(err => {
-        res.sendStatus(500)
-        res.send({ 'error': err })
+        res.send(ERROR_MESSAGE)
       })
   }
 })
@@ -266,8 +261,7 @@ router.get('/games/:id', (req, res) => {
         res.send({ 'data': result.data })
       })
       .catch(err => {
-        res.sendStatus(500)
-        res.send({ 'error': err })
+        res.send(ERROR_MESSAGE)
       })
   } else {
     res.sendStatus(422)

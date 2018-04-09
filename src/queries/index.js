@@ -2,7 +2,9 @@
  * Each rest endpoint is mapped to a graphql query. Below are the queries
  * related to basketball data.
  */
+
 export const gqlBasketballAllGames = () => { return `{all_games {id,home_team_id,away_team_id,date}}` }
+export const gqlBasketballAllGamesWithScores = () => { return `{all_games {id,home_team_id,away_team_id,date}}` }
 export const gqlBasketballAllPlayers = () => { return `{all_players {id,name,team_id}}` }
 export const gqlBasketballAllTeams = () => { return `{all_teams{id,city,name,full_name,abbrev}}` }
 export const gqlBasketballGamesByDate = (date) => { return `{games(date:"${date}"){id,home_team_id,away_team_id,date}}` }

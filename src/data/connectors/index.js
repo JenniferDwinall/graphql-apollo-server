@@ -1,8 +1,14 @@
 import 'isomorphic-fetch' /* global fetch */
 
+import { ErrorFileNotFound } from './errors'
+import {
+  GenericError,
+  InvalidSourceFileError
+} from '../errors'
+
 const FILE_LOCATION = 'http://localhost:3000/static/files'
 const FILE_GAMES = `${FILE_LOCATION}/games.json`
-// const FILE_GAME_STATE = `${FILE_LOCATION}/game_state.json`
+const FILE_GAME_STATE = `${FILE_LOCATION}/game_state.json`
 const FILE_PLAYERS = `${FILE_LOCATION}/players.json`
 const FILE_PLAYER_STATS = `${FILE_LOCATION}/player_stats.json`
 const FILE_TEAMS = `${FILE_LOCATION}/teams.json`
@@ -13,8 +19,16 @@ const FILE_TEAMS = `${FILE_LOCATION}/teams.json`
  * @return {Array} - An array of team objects.
  */
 export const getTeams = async () => {
-  const response = await fetch(FILE_TEAMS)
-  return response.json()
+  return await fetch(FILE_TEAMS)
+    .then(response => {
+      if (!response.ok) {
+        throw new ErrorFileNotFound(response.statusText)
+      }
+      return response.json()
+    })
+    .catch(err => {
+      return (err.name === 'ErrorFileNotFound') ? InvalidSourceFileError : GenericError
+    })
 }
 
 /*
@@ -25,10 +39,20 @@ export const getTeams = async () => {
  * @return {Array} - An array containing the team object.
  */
 export const getTeam = async (id) => {
-  const response = await fetch(FILE_TEAMS)
-  const json = await response.json()
-  const data = json.filter((elem, index, arr) => elem.id === id)
-  return data[0]
+  return await fetch(FILE_TEAMS)
+    .then(response => {
+      if (!response.ok) {
+        throw new ErrorFileNotFound(response.statusText)
+      }
+      return response.json()
+    })
+    .then(json => {
+      const data = json.filter((elem, index, arr) => elem.id === id)
+      return data[0]
+    })
+    .catch(err => {
+      return (err.name === 'ErrorFileNotFound') ? InvalidSourceFileError : GenericError
+    })
 }
 
 /*
@@ -37,8 +61,16 @@ export const getTeam = async (id) => {
  * @return {Array} - An array of player objects.
  */
 export const getAllPlayers = async () => {
-  const response = await fetch(FILE_PLAYERS)
-  return response.json()
+  return await fetch(FILE_PLAYERS)
+    .then(response => {
+      if (!response.ok) {
+        throw new ErrorFileNotFound(response.statusText)
+      }
+      return response.json()
+    })
+    .catch(err => {
+      return (err.name === 'ErrorFileNotFound') ? InvalidSourceFileError : GenericError
+    })
 }
 
 /*
@@ -49,9 +81,14 @@ export const getAllPlayers = async () => {
  * @return {Array} - An array of player objects.
  */
 export const getPlayersByDate = async (date) => {
-  const games = await getGamesByDate(date)
-  const gameIds = games.map(game => game.id)
-  return getPlayersStatsByGame(gameIds)
+  return await getGamesByDate(date)
+    .then(games => {
+      const gameIds = games.map(game => game.id)
+      return getPlayersStatsByGame(gameIds)
+    })
+    .catch(err => {
+      return (err.name === 'ErrorFileNotFound') ? InvalidSourceFileError : GenericError
+    })
 }
 
 /*
@@ -62,23 +99,43 @@ export const getPlayersByDate = async (date) => {
  * @return {Object} - The player object.
  */
 export const getPlayerById = async (id) => {
-  const response = await fetch(FILE_PLAYERS)
-  const json = await response.json()
-  const data = json.filter((elem, index, arr) => id === elem.id)
-  return data[0]
+  return await fetch(FILE_PLAYERS)
+    .then(response => {
+      if (!response.ok) {
+        throw new ErrorFileNotFound(response.statusText)
+      }
+      return response.json()
+    })
+    .then(json => {
+      const data = json.filter((elem, index, arr) => id === elem.id)
+      return data[0]
+    })
+    .catch(err => {
+      return (err.name === 'ErrorFileNotFound') ? InvalidSourceFileError : GenericError
+    })
 }
 
 /*
- * Returns the player object of the id specified.
+ * Returns an array of players objects of the ids specified.
  *
  * @param ids {Array} - An array of player ids.
  *
  * @return {Array} - An array of player objects.
  */
 export const getPlayersByIds = async (ids) => {
-  const response = await fetch(FILE_PLAYERS)
-  const json = await response.json()
-  return json.filter((elem, index, arr) => ids.includes(elem.id))
+  return await fetch(FILE_PLAYERS)
+    .then(response => {
+      if (!response.ok) {
+        throw new ErrorFileNotFound(response.statusText)
+      }
+      return response.json()
+    })
+    .then(json => {
+      return json.filter((elem, index, arr) => ids.includes(elem.id))
+    })
+    .catch(err => {
+      return (err.name === 'ErrorFileNotFound') ? InvalidSourceFileError : GenericError
+    })
 }
 
 /*
@@ -89,9 +146,19 @@ export const getPlayersByIds = async (ids) => {
  * @return {Array} - An array of player stats objects.
  */
 export const getPlayerStats = async (id) => {
-  const response = await fetch(FILE_PLAYER_STATS)
-  const json = await response.json()
-  return json.filter((elem, index, arr) => id === elem.player_id)
+  return await fetch(FILE_PLAYER_STATS)
+    .then(response => {
+      if (!response.ok) {
+        throw new ErrorFileNotFound(response.statusText)
+      }
+      return response.json()
+    })
+    .then(json => {
+      return json.filter((elem, index, arr) => id === elem.player_id)
+    })
+    .catch(err => {
+      return (err.name === 'ErrorFileNotFound') ? InvalidSourceFileError : GenericError
+    })
 }
 
 /*
@@ -100,8 +167,41 @@ export const getPlayerStats = async (id) => {
  * @return {Array} - An array of game objects.
  */
 export const getAllGames = async () => {
-  const response = await fetch(FILE_GAMES)
-  return response.json()
+  return await fetch(FILE_GAMES)
+    .then(response => {
+      if (!response.ok) {
+        throw new ErrorFileNotFound(response.statusText)
+      }
+      return response.json()
+    })
+    .then(json => {
+
+    })
+    .catch(err => {
+      return (err.name === 'ErrorFileNotFound') ? InvalidSourceFileError : GenericError
+    })
+}
+
+/*
+ * Returns all games with scores.
+ *
+ * @return {Array} - An array of game objects.
+ */
+export const getAllGamesWithScores = async () => {
+  return await fetch(FILE_GAME_STATE)
+    .then(response => {
+      if (!response.ok) {
+        throw new ErrorFileNotFound(response.statusText)
+      }
+      return response.json()
+    })
+    .then(json => {
+      const gameIds = json.map((data) => data.game_id)
+      return getGamesByIds(gameIds)
+    })
+    .catch(err => {
+      return (err.name === 'ErrorFileNotFound') ? InvalidSourceFileError : GenericError
+    })
 }
 
 /*
@@ -112,10 +212,19 @@ export const getAllGames = async () => {
  * @return {Array} - An array of game objects.
  */
 export const getGamesByDate = async (date) => {
-  const response = await fetch(FILE_GAMES)
-  const json = await response.json()
-  // @TODO: Currently string matching the date.  Change this to work with all (reasonable) date formats.
-  return json.filter((elem, index, arr) => elem.date === date)
+  return await fetch(FILE_GAMES)
+    .then(response => {
+      if (!response.ok) {
+        throw new ErrorFileNotFound(response.statusText)
+      }
+      return response.json()
+    })
+    .then(json => {
+      return json.filter((elem, index, arr) => elem.date === date)
+    })
+    .catch(err => {
+      return (err.name === 'ErrorFileNotFound') ? InvalidSourceFileError : GenericError
+    })
 }
 
 /*
@@ -126,10 +235,43 @@ export const getGamesByDate = async (date) => {
  * @return {Array} - An array containing the game object.
  */
 export const getGameById = async (id) => {
-  const response = await fetch(FILE_GAMES)
-  const json = await response.json()
-  const data = json.filter((elem, index, arr) => elem.id === id)
-  return data[0]
+  return await fetch(FILE_GAMES)
+    .then(response => {
+      if (!response.ok) {
+        throw new ErrorFileNotFound(response.statusText)
+      }
+      return response.json()
+    })
+    .then(json => {
+      const data = json.filter((elem, index, arr) => elem.id === id)
+      return data[0]
+    })
+    .catch(err => {
+      return (err.name === 'ErrorFileNotFound') ? InvalidSourceFileError : GenericError
+    })
+}
+
+/*
+ * Returns an array of games objects of the ids specified.
+ *
+ * @param ids {Array} - An array of game ids.
+ *
+ * @return {Array} - An array of games objects.
+ */
+export const getGamesByIds = async (ids) => {
+  return await fetch(FILE_GAMES)
+    .then(response => {
+      if (!response.ok) {
+        throw new ErrorFileNotFound(response.statusText)
+      }
+      return response.json()
+    })
+    .then(json => {
+      return json.filter((elem, index, arr) => ids.includes(elem.id))
+    })
+    .catch(err => {
+      return (err.name === 'ErrorFileNotFound') ? InvalidSourceFileError : GenericError
+    })
 }
 
 /*
@@ -140,9 +282,19 @@ export const getGameById = async (id) => {
  * @return {Array} - An array of player stats objects.
  */
 export const getPlayersStatsByGame = async (ids) => {
-  const response = await fetch(FILE_PLAYER_STATS)
-  const json = await response.json()
-  const gameData = json.filter((elem, index, arr) => ids.includes(elem.game_id))
-  const playerIds = gameData.map((data) => data.player_id)
-  return getPlayersByIds(playerIds)
+  return await fetch(FILE_PLAYER_STATS)
+    .then(response => {
+      if (!response.ok) {
+        throw new ErrorFileNotFound(response.statusText)
+      }
+      return response.json()
+    })
+    .then(json => {
+      const gameData = json.filter((elem, index, arr) => ids.includes(elem.game_id))
+      const playerIds = gameData.map((data) => data.player_id)
+      return getPlayersByIds(playerIds)
+    })
+    .catch(err => {
+      return (err.name === 'ErrorFileNotFound') ? InvalidSourceFileError : GenericError
+    })
 }
