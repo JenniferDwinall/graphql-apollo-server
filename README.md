@@ -19,6 +19,11 @@ To run the test suite:
 
     yarn test
 
+To run code linting:
+
+    yarn lint
+    yarn lint-fix
+
 To build and run the app in dev mode:
 
     yarn dev
